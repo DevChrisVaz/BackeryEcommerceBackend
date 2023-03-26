@@ -4,7 +4,7 @@
   "description": "Backend for Deleite, a bakery, and its build using Hexagonal Architecture",
   "main": "index.ts",
   "scripts": {
-    "start": "node build/infrastructure/driving-adapters/api-rest/index.ts",
+    "start": "node build/infrastructure/driving-adapters/api-rest/index.js",
     "dev": "nodemon src/infrastructure/driving-adapters/api-rest/index.ts",
     "build": "tsc"
   },
