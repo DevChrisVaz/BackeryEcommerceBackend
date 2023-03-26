@@ -44,7 +44,7 @@ class CreateUser {
         // this.filesManagerRepo.createFile(this.keysPath + "/" + user.userName + ".pem", keys.privateKey, "utf8");
 
         
-        if (user.profilePicture !== "null") {
+        if (user.profilePicture !== "null" && user.profilePicture.name) {
             if(!this.filesManagerRepo.exists(this.profileImagePath)) {
                 this.filesManagerRepo.createFolder(this.profileImagePath, true);
             }
