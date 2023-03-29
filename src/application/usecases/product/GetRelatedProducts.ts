@@ -17,7 +17,7 @@ class GetRelatedProducts {
             const products: Product[] = await this.productRepo.getAll(options);
             const relatedProducts: Product[] = products.filter(p => {
                 let matchProduct: Product | null = null;
-                p.tags.every(t => {
+                foundProduct.tags.every(t => {
                     if (p.tags.includes(t)) {
                         matchProduct = p;
                         return false;
