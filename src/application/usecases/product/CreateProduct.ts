@@ -2,20 +2,24 @@ import Product from "../../../domain/entities/product";
 import IFilesManagerRepo from "../../../domain/repositories/files-manager/IFilesManagerRepo";
 import IProductRepo from "../../../domain/repositories/IProductRepo";
 import path from "path";
+import IImageOptimizerRepo from "../../../domain/repositories/image-optimization/IImageOptimizerRepo";
 
 class CreateProduct {
     private readonly productRepo: IProductRepo;
     private readonly filesManagerRepo: IFilesManagerRepo;
+    private readonly imageOptimizerRepo: IImageOptimizerRepo;
     private readonly productImagePath: string;
     private readonly productImageStaticPath: string;
 
     constructor(
         productRepo: IProductRepo,
-        filesManagerRepo: IFilesManagerRepo
+        filesManagerRepo: IFilesManagerRepo,
+        imageOptimizerRepo: IImageOptimizerRepo
     ) {
         this.productRepo = productRepo;
         this.filesManagerRepo = filesManagerRepo;
-        this.productImagePath = "public/img/products";
+        this.imageOptimizerRepo = imageOptimizerRepo;
+        this.productImagePath = "public/img/products/";
         this.productImageStaticPath = "img/products";
     }
 
@@ -27,9 +31,9 @@ class CreateProduct {
             }
 
             Object.keys(product.images as (keyof typeof product.images)[]).forEach((key, index) => {
-                let fileName = product.uuid + "_" + index + path.extname(product.images[key].name);
-    
-                this.filesManagerRepo.createFile(this.productImagePath + "/" + fileName, product.images[key].data);
+                let fileName = product.uuid + "_" + index + ".webp";
+
+                this.imageOptimizerRepo.optimizeProductImage(product.images[key].data, 1024, this.productImagePath, fileName);
                 imagesPaths.push(this.productImageStaticPath + "/" + fileName);
             })
 

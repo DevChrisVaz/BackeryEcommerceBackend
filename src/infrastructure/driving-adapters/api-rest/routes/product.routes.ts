@@ -7,14 +7,18 @@ import GetRelatedProducts from "../../../../application/usecases/product/GetRela
 import IncreaseProductViews from "../../../../application/usecases/product/IncreaseProductViews";
 import UpdateProduct from "../../../../application/usecases/product/UpdateProduct";
 import FilesManagerRepo from "../../../implementations/FS/FilesManager";
+import ImageOptimizerRepo from "../../../implementations/Sharp/ImageOptimizerRepo";
 import ProductRepo from "../../../implementations/MongoDB/ProductRepo";
 import ProductController from "../controllers/product.controller";
+import GetMostVisitedProducts from "../../../../application/usecases/product/GetMostVisitedProducts";
 
 const productRepo = new ProductRepo();
 const filesManagerRepo = new FilesManagerRepo();
+const imageOptimizerRepo = new ImageOptimizerRepo();
 const getAllProducts = new GetAllProducts(productRepo);
+const getMostVisitedProducts = new GetMostVisitedProducts(productRepo);
 const getProductById = new GetProductById(productRepo);
-const createProduct = new CreateProduct(productRepo, filesManagerRepo);
+const createProduct = new CreateProduct(productRepo, filesManagerRepo, imageOptimizerRepo);
 const updateProduct = new UpdateProduct(productRepo);
 const deleteProduct = new DeleteProduct(productRepo);
 const increateProductViews = new IncreaseProductViews(productRepo);
@@ -24,6 +28,7 @@ const productController = new ProductController(
     createProduct,
     getProductById,
     getAllProducts,
+    getMostVisitedProducts,
     updateProduct,
     deleteProduct,
     increateProductViews,
@@ -35,6 +40,8 @@ const productRouter = Router();
 productRouter.route('/')
     .get(productController.getAllProducts)
     .post(productController.createProduct);
+productRouter.route("/most-visited")
+    .get(productController.getMostVisited);
 productRouter.route('/:id')
     .get(productController.getProductById)
     .put(productController.updateProduct)

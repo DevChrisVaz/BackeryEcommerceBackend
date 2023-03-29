@@ -13,6 +13,11 @@ import productRouter from "./product.routes";
 import categoryRouter from "./category.routes";
 import CategoryNotFoundError from "../../../../domain/exceptions/category/CategoryNotFoundError";
 import CategoryAlreadyExistsError from "../../../../domain/exceptions/category/CategoryAlreadyExistsError";
+import quoteRouter from "./quote.routes";
+import commentRouter from "./comment.routes";
+import QuoteNotFoundError from "../../../../domain/exceptions/quote/QuoteNotFoundError";
+import CommentNotFoundError from "../../../../domain/exceptions/comment/CommetNotFoundError";
+import UserAlreadyCommentedError from "../../../../domain/exceptions/comment/UserAlreadyCommentedError";
 
 const router = Router();
 
@@ -22,10 +27,12 @@ router.use("/inventories", inventoryRouter);
 router.use("/recipes", recipeRouter);
 router.use("/products", productRouter);
 router.use("/categories", categoryRouter);
+router.use("/quotes", quoteRouter);
+router.use("/comments", commentRouter);
 
 router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    //#region 
     // User Errors ------------------------------------------------
+    //#region 
     if (err instanceof UserNotFoundError) {
         res.status(404).json({
             message: err.message
@@ -39,8 +46,8 @@ router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
     //#endregion
 
-    //#region
     // Ingredient Errors -----------------------------
+    //#region
     else if (err instanceof IngredientNotFoundError) {
         res.status(404).json({
             message: err.message
@@ -48,8 +55,8 @@ router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
     //#endregion
 
-    //#region
     // Inventory Errors ---------------------------------
+    //#region
     else if (err instanceof InventoryNotFoundError) {
         res.status(404).json({
             message: err.message
@@ -57,8 +64,8 @@ router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
     //#endregion
 
-    //#region
     // Recipe Errors ---------------------------------
+    //#region
     else if (err instanceof RecipeNotFoundError) {
         res.status(404).json({
             message: err.message
@@ -66,8 +73,8 @@ router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
     //#endregion
 
-    //#region
     // Product Errors ---------------------------------
+    //#region
     else if (err instanceof ProductNotFoundError) {
         res.status(404).json({
             message: err.message
@@ -75,8 +82,8 @@ router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
     //#endregion
 
-    //#region
     // Category Errors ---------------------------------
+    //#region
     else if (err instanceof CategoryNotFoundError) {
         res.status(404).json({
             name: err.name,
@@ -91,17 +98,38 @@ router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
     //#endregion
 
+    // Quote Errors ------------------------------------
+    //#region
+    else if (err instanceof QuoteNotFoundError) {
+        res.status(404).json({
+            name: err.name,
+            message: err.message
+        });
+    }
+    //#endregion
+
+    // Comment Errors ------------------------------------
+    //#region
+    else if (err instanceof CommentNotFoundError) {
+        res.status(404).json({
+            name: err.name,
+            message: err.message
+        });
+    }
+    else if (err instanceof UserAlreadyCommentedError) {
+        res.status(400).json({
+            name: err.name,
+            message: err.message
+        });
+    }
+    //#endregion
+
     else {
-        // next(err);
         console.log(err);
         res.status(500).json({
             error: "Something went wrong"
         });
     }
 });
-
-// router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    
-// });
 
 export default router;

@@ -1,7 +1,9 @@
+import FilterOptions from "../entities/filterOptions";
 import Product from "../entities/product";
 
 interface IProductRepo {
-    getAll(): Promise<Product[]>;
+    getAll(options: FilterOptions): Promise<Product[]>;
+    getMostVisited(): Promise<Product[]>;
     // getMany(params: any): Promise<Product[]>;
     getById(id: string): Promise<Product | null>;
     create(product: Product): Promise<Product>;

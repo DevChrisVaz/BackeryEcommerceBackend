@@ -17,7 +17,7 @@ class DeleteCategory {
             if (deletedCategory) return deletedCategory;
         }
 
-        throw new CategoryNotFoundError;
+        throw new CategoryNotFoundError();
     }
 }
 
