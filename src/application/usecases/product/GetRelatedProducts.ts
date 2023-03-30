@@ -10,11 +10,11 @@ class GetRelatedProducts {
         this.productRepo = productRepo;
     }
 
-    async run(id: string, options: FilterOptions): Promise<Product[]> {
+    async run(id: string): Promise<Product[]> {
         const foundProduct: Product | null = await this.productRepo.getById(id);
 
         if(foundProduct) {
-            const products: Product[] = await this.productRepo.getAll(options);
+            const products: Product[] = await this.productRepo.getAll();
             const relatedProducts: Product[] = products.filter(p => {
                 let matchProduct: Product | null = null;
                 foundProduct.tags.every(t => {

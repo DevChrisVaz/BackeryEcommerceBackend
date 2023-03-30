@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 import CreateProduct from "../../../../application/usecases/product/CreateProduct";
 import DeleteProduct from "../../../../application/usecases/product/DeleteProduct";
 import GetAllProducts from "../../../../application/usecases/product/GetAllProducts";
+import GetManyProducts from "../../../../application/usecases/product/GetManyProducts";
 import GetMostVisitedProducts from "../../../../application/usecases/product/GetMostVisitedProducts";
 import GetProductById from "../../../../application/usecases/product/GetProductById";
 import GetRelatedProducts from "../../../../application/usecases/product/GetRelatedProducts";
@@ -10,11 +11,13 @@ import IncreaseProductViews from "../../../../application/usecases/product/Incre
 import UpdateProduct from "../../../../application/usecases/product/UpdateProduct";
 import FilterOptions from "../../../../domain/entities/filterOptions";
 import Product from "../../../../domain/entities/product";
+import ProductsWithTotal from "../../../../domain/entities/productsWithTotal";
 
 class ProductController {
     private readonly createProductUseCase: CreateProduct;
     private readonly getProductByIdUseCase: GetProductById;
     private readonly getAllProductsUseCase: GetAllProducts;
+    private readonly getManyProductsUseCase: GetManyProducts;
     private readonly getMostVisitedProductsUseCase: GetMostVisitedProducts;
     private readonly updateProductUseCase: UpdateProduct;
     private readonly deleteProductUseCase: DeleteProduct;
@@ -24,7 +27,8 @@ class ProductController {
     constructor(
         createProductUseCase: CreateProduct,
         getProductByIdUseCase: GetProductById,
-        getAllProductsUseCase: GetAllProducts,
+        getAllProducts: GetAllProducts,
+        getManyProductsUseCase: GetManyProducts,
         getMostVisitedProductsUseCase: GetMostVisitedProducts,
         updateProductUseCase: UpdateProduct,
         deleteProductUseCase: DeleteProduct,
@@ -33,7 +37,8 @@ class ProductController {
     ) {
         this.createProductUseCase = createProductUseCase;
         this.getProductByIdUseCase = getProductByIdUseCase;
-        this.getAllProductsUseCase = getAllProductsUseCase;
+        this.getAllProductsUseCase = getAllProducts;
+        this.getManyProductsUseCase = getManyProductsUseCase;
         this.getMostVisitedProductsUseCase = getMostVisitedProductsUseCase;
         this.updateProductUseCase = updateProductUseCase;
         this.deleteProductUseCase = deleteProductUseCase;
@@ -42,14 +47,26 @@ class ProductController {
     }
 
     getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
-        const { limit, page } = req.params;
-        const options: FilterOptions = {
-            limit: parseInt(limit) || 12,
-            page: parseInt(page) || 1
-        }
         try {
-            const products: Product[] = await this.getAllProductsUseCase.run(options);
+            const products: Product[] = await this.getAllProductsUseCase.run();
             res.status(200).json(products);
+            return;
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    getManyProducts = async (req: Request, res: Response, next: NextFunction) => {
+        const { limit, page, category, searchBy } = req.query;
+        let options: FilterOptions = {
+            limit: limit ? parseInt(limit.toString()) : 12,
+            page: page ? parseInt(page.toString()) : 1
+        }
+        if (category) options.filters = { ...options.filters, category: decodeURIComponent(category?.toString() ?? "") };
+        if (searchBy) options.filters = { ...options.filters, searchBy: decodeURIComponent(searchBy?.toString() ?? "").split(" ") };
+        try {
+            const productsWithTotal: ProductsWithTotal = await this.getManyProductsUseCase.run(options);
+            res.status(200).json(productsWithTotal);
             return;
         } catch (err) {
             next(err);
@@ -117,13 +134,9 @@ class ProductController {
     }
 
     getRelatedProducts = async (req: Request, res: Response, next: NextFunction) => {
-        const { id, limit, page } = req.params;
-        const options: FilterOptions = {
-            limit: parseInt(limit) || 12,
-            page: parseInt(page) || 1
-        }
+        const { id } = req.params;
         try {
-            const relatedProducts: Product[] = await this.getRelatedProductsUseCase.run(id, options);
+            const relatedProducts: Product[] = await this.getRelatedProductsUseCase.run(id);
             res.status(200).json(relatedProducts);
         } catch (err) {
             next(err);

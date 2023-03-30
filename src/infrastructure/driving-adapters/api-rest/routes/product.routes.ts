@@ -11,11 +11,13 @@ import ImageOptimizerRepo from "../../../implementations/Sharp/ImageOptimizerRep
 import ProductRepo from "../../../implementations/MongoDB/ProductRepo";
 import ProductController from "../controllers/product.controller";
 import GetMostVisitedProducts from "../../../../application/usecases/product/GetMostVisitedProducts";
+import GetManyProducts from "../../../../application/usecases/product/GetManyProducts";
 
 const productRepo = new ProductRepo();
 const filesManagerRepo = new FilesManagerRepo();
 const imageOptimizerRepo = new ImageOptimizerRepo();
 const getAllProducts = new GetAllProducts(productRepo);
+const getManyProducts = new GetManyProducts(productRepo);
 const getMostVisitedProducts = new GetMostVisitedProducts(productRepo);
 const getProductById = new GetProductById(productRepo);
 const createProduct = new CreateProduct(productRepo, filesManagerRepo, imageOptimizerRepo);
@@ -28,6 +30,7 @@ const productController = new ProductController(
     createProduct,
     getProductById,
     getAllProducts,
+    getManyProducts,
     getMostVisitedProducts,
     updateProduct,
     deleteProduct,
@@ -40,6 +43,8 @@ const productRouter = Router();
 productRouter.route('/')
     .get(productController.getAllProducts)
     .post(productController.createProduct);
+productRouter.route('/many')
+    .get(productController.getManyProducts);
 productRouter.route("/most-visited")
     .get(productController.getMostVisited);
 productRouter.route('/:id')
