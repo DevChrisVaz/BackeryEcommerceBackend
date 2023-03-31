@@ -6,6 +6,7 @@ import GetInventoryById from "../../../../application/usecases/inventory/GetInve
 import UpdateInventory from "../../../../application/usecases/inventory/UpdateInventory";
 import InventoryRepo from "../../../implementations/MongoDB/InventoryRepo";
 import InventoryController from "../controllers/inventory.controller";
+import { authorizeUser } from "../middlewares/user/authorizeUser";
 
 const inventoryRepo = new InventoryRepo();
 const getAllInventories = new GetAllInventories(inventoryRepo);
@@ -24,11 +25,11 @@ const inventoryController = new InventoryController(
 const inventoryRouter = Router();
 
 inventoryRouter.route('/')
-    .get(inventoryController.getAllInventories)
-    .post(inventoryController.createInventory);
+    .get(authorizeUser, inventoryController.getAllInventories)
+    .post(authorizeUser, inventoryController.createInventory);
 inventoryRouter.route('/:id')
-    .get(inventoryController.getInventoryById)
-    .put(inventoryController.updateInventory)
-    .delete(inventoryController.deleteInventory);
+    .get(authorizeUser, inventoryController.getInventoryById)
+    .put(authorizeUser, inventoryController.updateInventory)
+    .delete(authorizeUser, inventoryController.deleteInventory);
 
 export default inventoryRouter;

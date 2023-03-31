@@ -12,6 +12,7 @@ import ProductRepo from "../../../implementations/MongoDB/ProductRepo";
 import ProductController from "../controllers/product.controller";
 import GetMostVisitedProducts from "../../../../application/usecases/product/GetMostVisitedProducts";
 import GetManyProducts from "../../../../application/usecases/product/GetManyProducts";
+import { authorizeUser } from "../middlewares/user/authorizeUser";
 
 const productRepo = new ProductRepo();
 const filesManagerRepo = new FilesManagerRepo();
@@ -42,15 +43,15 @@ const productRouter = Router();
 
 productRouter.route('/')
     .get(productController.getAllProducts)
-    .post(productController.createProduct);
+    .post(authorizeUser, productController.createProduct);
 productRouter.route('/many')
     .get(productController.getManyProducts);
 productRouter.route("/most-visited")
     .get(productController.getMostVisited);
 productRouter.route('/:id')
     .get(productController.getProductById)
-    .put(productController.updateProduct)
-    .delete(productController.deleteProduct);
+    .put(authorizeUser, productController.updateProduct)
+    .delete(authorizeUser, productController.deleteProduct);
 productRouter.route('/increase-views/:id')
     .put(productController.increaseProductViews);
 productRouter.route('/related/:id')

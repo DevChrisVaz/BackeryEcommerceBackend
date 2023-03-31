@@ -6,6 +6,7 @@ import GetIngredientById from "../../../../application/usecases/ingredient/GetIn
 import UpdateIngredient from "../../../../application/usecases/ingredient/UpdateIngredient";
 import IngredientRepo from "../../../implementations/MongoDB/IngredientRepo";
 import IngredientController from "../controllers/ingredient.controller";
+import { authorizeUser } from "../middlewares/user/authorizeUser";
 
 const ingredientRepo = new IngredientRepo();
 const getAllIngredients = new GetAllIngredients(ingredientRepo);
@@ -25,10 +26,10 @@ const ingredientRouter = Router();
 
 ingredientRouter.route('/')
     .get(ingredientController.getAllIngredients)
-    .post(ingredientController.createIngredient);
+    .post(authorizeUser, ingredientController.createIngredient);
 ingredientRouter.route('/:id')
-    .get(ingredientController.getIngredientById)
-    .put(ingredientController.updateIngredient)
-    .delete(ingredientController.deleteIngredient);
+    .get(authorizeUser, ingredientController.getIngredientById)
+    .put(authorizeUser, ingredientController.updateIngredient)
+    .delete(authorizeUser, ingredientController.deleteIngredient);
 
 export default ingredientRouter;

@@ -6,6 +6,7 @@ import GetCategoryById from "../../../../application/usecases/category/GetCatego
 import UpdateCategory from "../../../../application/usecases/category/UpdateCategory";
 import CategoryRepo from "../../../implementations/MongoDB/CategoryRepo";
 import CategoryController from "../controllers/category.controller";
+import { authorizeUser } from "../middlewares/user/authorizeUser";
 
 const categoryRepo = new CategoryRepo();
 const getAllCategories = new GetAllCategories(categoryRepo);
@@ -25,10 +26,10 @@ const categoryRouter = Router();
 
 categoryRouter.route('/')
     .get(categoryController.getAllCategories)
-    .post(categoryController.createCategory);
+    .post(authorizeUser, categoryController.createCategory);
 categoryRouter.route('/:id')
     .get(categoryController.getCategoryById)
-    .put(categoryController.updateCategory)
-    .delete(categoryController.deleteCategory);
+    .put(authorizeUser, categoryController.updateCategory)
+    .delete(authorizeUser, categoryController.deleteCategory);
 
 export default categoryRouter;

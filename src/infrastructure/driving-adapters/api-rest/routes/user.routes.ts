@@ -11,31 +11,40 @@ import PasswordEncryptionRepo from "../../../implementations/Encryption/Password
 import FilesManagerRepo from "../../../implementations/FS/FilesManager";
 import UserRepo from "../../../implementations/MongoDB/UserRepo";
 import UserController from "../controllers/user.controller";
+import RefreshUserSession from "../../../../application/usecases/user/RefreshUserSession";
+import { authorizeUser } from "../middlewares/user/authorizeUser";
+import UserLogout from "../../../../application/usecases/user/UserLogout";
 
 const passwordEncryptionRepo = new PasswordEncryptionRepo;
-const dataEncryptionRepo = new DataEncryptionRepo(process.env.PASSPHRASE ?? "");
+// const dataEncryptionRepo = new DataEncryptionRepo(process.env.PASSPHRASE ?? "");
 const filesManagerRepo = new FilesManagerRepo();
 const authenticationRepo = new AuthenticationRepo();
 
 const userRepo = new UserRepo();
 const getAllUsers = new GetAllUsers(userRepo);
-const createUser = new CreateUser(userRepo, passwordEncryptionRepo,dataEncryptionRepo, filesManagerRepo);
+const createUser = new CreateUser(userRepo, passwordEncryptionRepo, filesManagerRepo);
 const getUserById = new GetUserById(userRepo);
 const updateUser = new UpdateUser(userRepo);
 const deleteUser = new DeleteUser(userRepo);
 const userLogin = new UserLogin(userRepo, passwordEncryptionRepo, authenticationRepo);
-const userController = new UserController(getAllUsers, createUser, getUserById, updateUser, deleteUser, userLogin);
+const refreshUserSession = new RefreshUserSession(userRepo, authenticationRepo);
+const userLogout = new UserLogout(userRepo, authenticationRepo);
+const userController = new UserController(getAllUsers, createUser, getUserById, updateUser, deleteUser, userLogin, refreshUserSession, userLogout);
 
 const userRouter = Router();
 
 userRouter.route('/')
-    .get(userController.getAllUsers)
-    .post(userController.createUser);
+    .get(authorizeUser, userController.getAllUsers)
+    .post(authorizeUser, userController.createUser);
 userRouter.route('/:id')
-    .get(userController.getUserById)
-    .put(userController.updateUser)
-    .delete(userController.deleteUser);
+    .get(authorizeUser, userController.getUserById)
+    .put(authorizeUser, userController.updateUser)
+    .delete(authorizeUser, userController.deleteUser);
 userRouter.route("/login")
     .post(userController.userLogin);
+userRouter.route("/refresh")
+    .post(userController.refreshSession);
+userRouter.route("/logout")
+    .get(userController.userLogout);
 
 export default userRouter;

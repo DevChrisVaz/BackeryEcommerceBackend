@@ -8,6 +8,8 @@ import User from "../../../../domain/entities/user";
 import { v4 as uuid } from "uuid";
 import UserLogin from "../../../../application/usecases/user/UserLogin";
 import Tokens from "../../../../domain/entities/tokens";
+import RefreshUserSession from "../../../../application/usecases/user/RefreshUserSession";
+import UserLogout from "../../../../application/usecases/user/UserLogout";
 
 class UserController {
     private readonly getAllUsersUseCase: GetAllUsers;
@@ -16,6 +18,8 @@ class UserController {
     private readonly updateUserUseCase: UpdateUser;
     private readonly deleteUserUseCase: DeleteUser;
     private readonly userLoginUseCase: UserLogin;
+    private readonly refreshUserSessionUseCase: RefreshUserSession;
+    private readonly userLogoutUseCase: UserLogout;
 
     constructor(
         getAllUsersUseCase: GetAllUsers,
@@ -23,7 +27,9 @@ class UserController {
         getUserByIdUseCase: GetUserById,
         updateUserUseCase: UpdateUser,
         deleteUserUseCase: DeleteUser,
-        userLoginUseCase: UserLogin
+        userLoginUseCase: UserLogin,
+        refreshUserSessionUseCase: RefreshUserSession,
+        userLogoutUseCase: UserLogout
     ) {
         this.getAllUsersUseCase = getAllUsersUseCase;
         this.createUserUseCase = createUserUseCase;
@@ -31,6 +37,8 @@ class UserController {
         this.updateUserUseCase = updateUserUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
         this.userLoginUseCase = userLoginUseCase;
+        this.refreshUserSessionUseCase = refreshUserSessionUseCase;
+        this.userLogoutUseCase = userLogoutUseCase;
     }
 
     getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -107,6 +115,34 @@ class UserController {
             return;
         } catch (err) {
             next(err);
+        }
+    }
+
+    refreshSession = async (req: Request, res: Response, next: NextFunction) => {
+        const token = req.cookies.jwt;
+        try {
+            const tokens: Tokens = await this.refreshUserSessionUseCase.run(token);
+            res.status(201)
+            .cookie("jwt", tokens.refreshToken, {
+                httpOnly: true,
+                sameSite: 'none',
+                secure: true,
+                maxAge: 24 * 60 * 60 * 1000 * 7
+            })
+            .json(tokens.accessToken);
+            return;
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    userLogout = async (req: Request, res: Response, next: NextFunction) => {
+        const token = req.cookies.jwt;
+        try {
+            await this.userLogoutUseCase.run(token);
+            res.status(200);
+        } catch (err) {
+            next(err)
         }
     }
 }

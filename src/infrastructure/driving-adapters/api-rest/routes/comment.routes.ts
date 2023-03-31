@@ -7,6 +7,7 @@ import GetPublicComments from "../../../../application/usecases/comment/GetPubli
 import UpdateComment from "../../../../application/usecases/comment/UpdateComment";
 import CommentRepo from "../../../implementations/MongoDB/CommentRepo";
 import CommentController from "../controllers/comment.controller";
+import { authorizeUser } from "../middlewares/user/authorizeUser";
 
 const commentRepo = new CommentRepo();
 const getAllComments = new GetAllComments(commentRepo);
@@ -27,13 +28,13 @@ const commentController = new CommentController(
 const commentRouter = Router();
 
 commentRouter.route('/')
-    .get(commentController.getAllComments)
+    .get(authorizeUser, commentController.getAllComments)
     .post(commentController.createComment);
 commentRouter.route("/public")
     .get(commentController.getPublicComments);
 commentRouter.route('/:id')
-    .get(commentController.getCommentById)
-    .put(commentController.updateComment)
-    .delete(commentController.deleteComment);
+    .get(authorizeUser, commentController.getCommentById)
+    .put(authorizeUser, commentController.updateComment)
+    .delete(authorizeUser, commentController.deleteComment);
 
 export default commentRouter;

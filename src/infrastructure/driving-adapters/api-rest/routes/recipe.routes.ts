@@ -6,6 +6,7 @@ import GetRecipeById from "../../../../application/usecases/Recipe/GetRecipeById
 import UpdateRecipe from "../../../../application/usecases/Recipe/UpdateRecipe";
 import RecipeRepo from "../../../implementations/MongoDB/RecipeRepo";
 import RecipeController from "../controllers/recipe.controller";
+import { authorizeUser } from "../middlewares/user/authorizeUser";
 
 const recipeRepo = new RecipeRepo();
 const getAllRecipes = new GetAllRecipes(recipeRepo);
@@ -24,11 +25,11 @@ const recipeController = new RecipeController(
 const recipeRouter = Router();
 
 recipeRouter.route('/')
-    .get(recipeController.getAllRecipes)
-    .post(recipeController.createRecipe);
+    .get(authorizeUser, recipeController.getAllRecipes)
+    .post(authorizeUser, recipeController.createRecipe);
 recipeRouter.route('/:id')
-    .get(recipeController.getRecipeById)
-    .put(recipeController.updateRecipe)
-    .delete(recipeController.deleteRecipe);
+    .get(authorizeUser, recipeController.getRecipeById)
+    .put(authorizeUser, recipeController.updateRecipe)
+    .delete(authorizeUser, recipeController.deleteRecipe);
 
 export default recipeRouter;

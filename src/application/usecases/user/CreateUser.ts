@@ -10,7 +10,7 @@ import path from "path";
 class CreateUser {
     private readonly userRepo: IUserRepo;
     private readonly passwordEncryptionRepo: IPasswordEncryptionRepo;
-    private readonly dataEncryptionRepo: IDataEncryptionRepo;
+    // private readonly dataEncryptionRepo: IDataEncryptionRepo;
     private readonly filesManagerRepo: IFilesManagerRepo;
     // private readonly keysPath: string;
     private readonly profileImagePath: string;
@@ -19,12 +19,12 @@ class CreateUser {
     constructor(
         userRepo: IUserRepo, 
         passwordEncryptionRepo: IPasswordEncryptionRepo,
-        dataEncryptionRepo: IDataEncryptionRepo, 
+        // dataEncryptionRepo: IDataEncryptionRepo, 
         filesManagerRepo: IFilesManagerRepo
     ) {
         this.userRepo = userRepo;
         this.passwordEncryptionRepo = passwordEncryptionRepo;
-        this.dataEncryptionRepo = dataEncryptionRepo;
+        // this.dataEncryptionRepo = dataEncryptionRepo;
         this.filesManagerRepo = filesManagerRepo;
         // this.keysPath = "private/keys/users";
         this.profileImagePath = "public/img/users/profile";

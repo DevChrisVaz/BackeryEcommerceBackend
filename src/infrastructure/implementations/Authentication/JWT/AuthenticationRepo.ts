@@ -12,9 +12,21 @@ class AuthenticationRepo implements IAuthenticationRepo {
     }
 
     validateToken(token: string, tokenSecret: string): boolean {
-        throw new Error("Method not implemented.");
+        let isValid = false;
+        jwt.verify(token, tokenSecret, (err, decoded) => {
+            if(err) {
+                isValid = false;
+            } else {
+                isValid = true;
+            }
+        });
+        return isValid;
     }
 
+    getTokenData(token: string): any {
+        const data: any = jwt.decode(token);
+        return data;
+    }
 }
 
 export default AuthenticationRepo;

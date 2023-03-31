@@ -3,6 +3,7 @@ import * as http from 'http';
 import cors from 'cors';
 import fileUpload from "express-fileupload";
 import helmet from 'helmet';
+import cookieParser from "cookie-parser";
 import router from './routes';
 // import swaggerUI from 'swagger-ui-express';
 // import docs from '../../../../docs';
@@ -21,6 +22,7 @@ class Server {
         this.app.use(express.static("public"));
         this.app.use(helmet());
         this.app.use(fileUpload());
+        this.app.use(cookieParser());
         this.app.use("/api", router);
         // this.app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(docs));
     }
