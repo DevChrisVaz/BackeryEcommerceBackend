@@ -2,3 +2,4 @@ node_modules
 private
 pnpm-lock.yaml
 .env
+public/img
