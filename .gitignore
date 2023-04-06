@@ -3,3 +3,4 @@ private
 pnpm-lock.yaml
 .env
 public/img
+build
