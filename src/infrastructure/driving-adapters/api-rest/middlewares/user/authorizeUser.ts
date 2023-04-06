@@ -10,7 +10,13 @@ const validateUserSessionUseCase = new ValidateUserSession(userRepo, authenticat
 
 export const authorizeUser = async (req: Request, res: Response, next: NextFunction) => {
     const authorization = req.headers["authorization"];
-    if (authorization) {
+    const apikey = req.headers["apikey"];
+    if (apikey){
+        if (apikey === process.env.APIKEY) {
+            return next();
+        }
+    } 
+    else if (authorization) {
         const token = authorization.split(" ")[1];
         if (token) {
             try {
