@@ -21,7 +21,13 @@ const authenticationRepo = new AuthenticationRepo_1.default();
 const validateUserSessionUseCase = new ValidateUserSession_1.default(userRepo, authenticationRepo);
 const authorizeUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const authorization = req.headers["authorization"];
-    if (authorization) {
+    const apikey = req.headers["apikey"];
+    if (apikey) {
+        if (apikey === process.env.APIKEY) {
+            return next();
+        }
+    }
+    else if (authorization) {
         const token = authorization.split(" ")[1];
         if (token) {
             try {
