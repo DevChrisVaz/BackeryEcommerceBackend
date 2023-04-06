@@ -10,8 +10,14 @@ class CreateCategory {
     }
 
     async run(category: Category): Promise<Category> {
-        const foundCategory: Category | null = await this.categoryRepo.getOne({ name: category.name });
-        if (foundCategory) throw new CategoryAlreadyExistsError();
+        let foundCategory: Category | null = await this.categoryRepo.getOne({ name: category.name, type: category.type });
+        if (foundCategory) {
+            foundCategory = {
+                ...foundCategory,
+                ...category,
+                status: "ACTIVE"     
+            }
+        };
         const createdCategory: Category = await this.categoryRepo.create(category);
         return createdCategory;
     }

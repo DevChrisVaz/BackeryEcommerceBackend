@@ -1,4 +1,3 @@
-import FilterOptions from "../../../domain/entities/filterOptions";
 import Product from "../../../domain/entities/product";
 import ProductNotFoundError from "../../../domain/exceptions/product/ProductNotFoundError";
 import IProductRepo from "../../../domain/repositories/IProductRepo";
@@ -27,7 +26,7 @@ class GetRelatedProducts {
                 if (matchProduct) return matchProduct;
                 return false;
             });
-            return relatedProducts;
+            return relatedProducts.slice(0, 3);
         }
 
         throw new ProductNotFoundError();

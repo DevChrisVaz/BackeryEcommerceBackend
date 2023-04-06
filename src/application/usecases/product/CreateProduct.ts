@@ -1,7 +1,6 @@
 import Product from "../../../domain/entities/product";
 import IFilesManagerRepo from "../../../domain/repositories/files-manager/IFilesManagerRepo";
 import IProductRepo from "../../../domain/repositories/IProductRepo";
-import path from "path";
 import IImageOptimizerRepo from "../../../domain/repositories/image-optimization/IImageOptimizerRepo";
 
 class CreateProduct {

@@ -1,11 +1,13 @@
-interface Ingredient {
+interface Topping {
     uuid?: string;
     name?: string;
     unitOfMeasure?: string;
-    cost?: number;
+    price?: number;
+    category?: string;
+    image?: any;
     status?: string;
     createdAt?: Date;
     updatedAt?: Date;
 };
 
-export default Ingredient;
+export default Topping;

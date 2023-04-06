@@ -3,3 +3,10 @@ export const Status = [
     "DELETED",
     "DISABLED"
 ];
+
+export const PostStatus = [
+    "ACTIVE",
+    "DELETED",
+    "HIDDEN",
+    "DRAFT"   
+]

@@ -2,10 +2,9 @@ import { NextFunction, Request, Response, Router } from "express";
 import UserAlreadyExistsError from "../../../../domain/exceptions/user/UserAlreadyExistsError";
 import UserNotFoundError from "../../../../domain/exceptions/user/UserNotFoundError";
 import userRouter from "./user.routes";
-import ingredientRouter from "./ingredient.routes";
-import IngredientNotFoundError from "../../../../domain/exceptions/ingredient/IngredientNotFoundError";
+import toppingRouter from "./topping.routes";
+import ToppingNotFoundError from "../../../../domain/exceptions/topping/ToppingNotFoundError";
 import InventoryNotFoundError from "../../../../domain/exceptions/inventory/InventoryNotFoundError";
-import inventoryRouter from "./inventory.routes";
 import RecipeNotFoundError from "../../../../domain/exceptions/recipe/RecipeNotFoundError";
 import recipeRouter from "./recipe.routes";
 import ProductNotFoundError from "../../../../domain/exceptions/product/ProductNotFoundError";
@@ -22,8 +21,7 @@ import UserAlreadyCommentedError from "../../../../domain/exceptions/comment/Use
 const router = Router();
 
 router.use("/users", userRouter);
-router.use("/ingredients", ingredientRouter);
-router.use("/inventories", inventoryRouter);
+router.use("/toppings", toppingRouter);
 router.use("/recipes", recipeRouter);
 router.use("/products", productRouter);
 router.use("/categories", categoryRouter);
@@ -46,9 +44,9 @@ router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
     //#endregion
 
-    // Ingredient Errors -----------------------------
+    // Topic Errors -----------------------------
     //#region
-    else if (err instanceof IngredientNotFoundError) {
+    else if (err instanceof ToppingNotFoundError) {
         res.status(404).json({
             message: err.message
         });

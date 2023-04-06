@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-const ingredientSchema = new Schema({
+const toppingSchema = new Schema({
     uuid: {
         type: String,
         required: true,
@@ -14,10 +14,15 @@ const ingredientSchema = new Schema({
         type: String,
         required: true
     },
-    cost: {
+    price: {
         type: Number,
         required: true
     },
+    category: {
+        type: String,
+        required: true
+    },
+    image: String,
     status: {
         type: String,
         required: true,
@@ -27,4 +32,11 @@ const ingredientSchema = new Schema({
     timestamps: true
 });
 
-export default model('Ingredient', ingredientSchema);
+toppingSchema.virtual("categoryRef", {
+    ref: "Category",
+    localField: "category",
+    foreignField: "uuid",
+    justOne: true
+});
+
+export default model('Topping', toppingSchema);
