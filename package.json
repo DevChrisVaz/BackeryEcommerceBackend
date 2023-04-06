@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node build/infrastructure/driving-adapters/api-rest/index.js",
     "dev": "nodemon src/infrastructure/driving-adapters/api-rest/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "evennode": "npm install && npm run build && npm start"
   },
   "author": "Christian Alexander Vázquez González",
   "license": "UNLICENSED",
