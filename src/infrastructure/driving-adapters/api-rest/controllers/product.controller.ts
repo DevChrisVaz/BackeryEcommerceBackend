@@ -57,13 +57,18 @@ class ProductController {
     }
 
     getManyProducts = async (req: Request, res: Response, next: NextFunction) => {
-        const { limit, page, category, searchBy } = req.query;
+        const { limit, page, category, searchBy, minPrice, maxPrice } = req.query;
+        
         let options: FilterOptions = {
             limit: limit ? parseInt(limit.toString()) : 12,
             page: page ? parseInt(page.toString()) : 1
         }
-        if (category) options.filters = { ...options.filters, category: decodeURIComponent(category?.toString() ?? "") };
-        if (searchBy) options.filters = { ...options.filters, searchBy: decodeURIComponent(searchBy?.toString() ?? "").split(" ") };
+
+        if (category) options.filters = { ...options.filters, category: decodeURIComponent(category.toString()) };
+        if (searchBy) options.filters = { ...options.filters, searchBy: decodeURIComponent(searchBy.toString()).split(" ") };
+        if (minPrice) options.filters = { ...options.filters, minPrice: parseInt(decodeURIComponent(minPrice.toString())) };
+        if (maxPrice) options.filters = { ...options.filters, maxPrice: parseInt(decodeURIComponent(maxPrice.toString())) };
+
         try {
             const productsWithTotal: ProductsWithTotal = await this.getManyProductsUseCase.run(options);
             res.status(200).json(productsWithTotal);

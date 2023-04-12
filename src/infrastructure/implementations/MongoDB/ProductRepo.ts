@@ -15,9 +15,10 @@ class ProductRepo implements IProductRepo {
 
         let filter: any = { status: { $ne: "DELETED" } };
         if(filters) {
-            const { category, searchBy } = filters;
+            const { category, searchBy, minPrice, maxPrice } = filters;
             if(category) filter = { ...filter, category };
-            if(searchBy) filter = { ...filter, name: { $regex: searchBy } }
+            if(searchBy) filter = { ...filter, name: { $regex: searchBy } };
+            if(maxPrice) filter = { ...filter, price: { $gte: minPrice || 0, $lte: maxPrice } };
         }
 
         const products: Product[] = await productModel.find(filter).skip(skip).limit(options.limit).populate("categoryRef").populate("tagsRef").lean();
