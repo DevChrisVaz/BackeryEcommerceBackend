@@ -124,10 +124,11 @@ class UserController {
             const tokens: Tokens = await this.refreshUserSessionUseCase.run(token);
             res.status(201)
             .cookie("jwt", tokens.refreshToken, {
+                sameSite: 'strict',
+                // path: "/",
+                maxAge: 24 * 60 * 60 * 1000 * 7,
                 httpOnly: true,
-                sameSite: 'none',
-                secure: true,
-                maxAge: 24 * 60 * 60 * 1000 * 7
+                secure: true
             })
             .json(tokens.accessToken);
             return;
@@ -140,7 +141,7 @@ class UserController {
         const token = req.cookies.jwt;
         try {
             await this.userLogoutUseCase.run(token);
-            res.status(200);
+            res.status(200).clearCookie("jwt");
         } catch (err) {
             next(err)
         }
