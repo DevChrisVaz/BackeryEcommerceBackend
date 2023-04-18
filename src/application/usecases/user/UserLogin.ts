@@ -43,7 +43,7 @@ class UserLogin {
                 foundUser.tokens && foundUser.tokens.push(refreshToken);
                 await this.userRepo.update(foundUser);
 
-                const accessToken = this.authenticationRepo.generateToken(tokenData, "10s", this.accessTokenSecret);
+                const accessToken = this.authenticationRepo.generateToken(tokenData, "1m", this.accessTokenSecret);
                 return {
                     accessToken,
                     refreshToken
