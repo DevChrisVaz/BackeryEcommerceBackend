@@ -18,7 +18,18 @@ class Server {
         this.app = express();
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
-        this.app.use(cors({ credentials: true, origin: ["deleitelzt-admin.vercel.app", "https://backery-ecommerce-services.onrender.com/api/categories/"] }));
+        this.app.use(cors({ 
+            origin(origin, callback) {
+                const allowedOrigins = ["https://deleitelzt-admin.vercel.app", "https://backery-ecommerce-services.onrender.com"];
+                if (allowedOrigins.includes(origin ?? "")) {
+                    callback(null, true);
+                } else {
+                    callback(new Error("Not allowed by CORS"));
+                }
+            },
+            methods: "GET, POST, PUT, DELETE",
+            credentials: true
+        }));
         this.app.use(express.static("public"));
         this.app.use(helmet());
         this.app.use(fileUpload());
