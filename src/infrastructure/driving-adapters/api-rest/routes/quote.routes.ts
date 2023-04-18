@@ -31,10 +31,10 @@ const quoteController = new QuoteController(
 const quoteRouter = Router();
 
 quoteRouter.route('/')
-    .get(quoteController.getAllQuotes)
+    .get(authorizeUser, quoteController.getAllQuotes)
     .post(quoteController.createQuote);
 quoteRouter.route('/:id')
-    .get(quoteController.getQuoteById)
+    .get(authorizeUser, quoteController.getQuoteById)
     .put(authorizeUser, quoteController.updateQuote)
     .delete(authorizeUser, quoteController.deleteQuote);
 

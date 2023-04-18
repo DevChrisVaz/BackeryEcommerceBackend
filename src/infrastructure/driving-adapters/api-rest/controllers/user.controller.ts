@@ -120,9 +120,10 @@ class UserController {
 
     refreshSession = async (req: Request, res: Response, next: NextFunction) => {
         const token = req.cookies.jwt;
+        console.log("refreshing")
         try {
             const tokens: Tokens = await this.refreshUserSessionUseCase.run(token);
-            res.status(201)
+            res.status(200)
             .cookie("jwt", tokens.refreshToken, {
                 sameSite: 'strict',
                 // path: "/",
@@ -141,7 +142,8 @@ class UserController {
         const token = req.cookies.jwt;
         try {
             await this.userLogoutUseCase.run(token);
-            res.status(200).clearCookie("jwt");
+            res.status(200).clearCookie("jwt").json({ message: "Logout successfully" });
+            return;
         } catch (err) {
             next(err)
         }

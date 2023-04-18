@@ -18,6 +18,7 @@ import QuoteNotFoundError from "../../../../domain/exceptions/quote/QuoteNotFoun
 import CommentNotFoundError from "../../../../domain/exceptions/comment/CommetNotFoundError";
 import UserAlreadyCommentedError from "../../../../domain/exceptions/comment/UserAlreadyCommentedError";
 import PasswordsNotMatchError from "../../../../domain/exceptions/PasswordsNotMatchError";
+import InvalidTokenError from "../../../../domain/exceptions/session/InvalidTokenError";
 
 const router = Router();
 
@@ -47,6 +48,13 @@ router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
     else if (err instanceof PasswordsNotMatchError) {
         res.status(400).json({
+            message: err.message,
+            name: err.name
+        });
+    }
+
+    else if (err instanceof InvalidTokenError) {
+        res.status(401).json({
             message: err.message,
             name: err.name
         });

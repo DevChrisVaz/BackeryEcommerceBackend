@@ -16,11 +16,12 @@ class Server {
     constructor(port: string | number) {
         this.port = port;
         this.app = express();
+        this.app.use(express.static("public"));
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(cors({ 
             origin(origin, callback) {
-                const allowedOrigins = ["https://deleitelzt-admin.vercel.app", "https://backery-ecommerce-services.onrender.com"];
+                const allowedOrigins = ["https://deleitelzt-admin.vercel.app", "https://deleitedlillian.vercel.app/", "http://localhost:5173", "http://localhost:3000"];
                 if (allowedOrigins.includes(origin ?? "")) {
                     callback(null, true);
                 } else {
@@ -30,7 +31,6 @@ class Server {
             methods: "GET, POST, PUT, DELETE",
             credentials: true
         }));
-        this.app.use(express.static("public"));
         this.app.use(helmet());
         this.app.use(fileUpload());
         this.app.use(cookieParser());

@@ -33,18 +33,18 @@ const userController = new UserController(getAllUsers, createUser, getUserById, 
 
 const userRouter = Router();
 
-userRouter.route('/')
-    .get(authorizeUser, userController.getAllUsers)
-    .post(authorizeUser, userController.createUser);
+userRouter.route("/login")
+    .post(userController.userLogin);
+userRouter.route("/refresh")
+    .get(userController.refreshSession);
+userRouter.route("/logout")
+    .get(userController.userLogout);
 userRouter.route('/:id')
     .get(authorizeUser, userController.getUserById)
     .put(authorizeUser, userController.updateUser)
     .delete(authorizeUser, userController.deleteUser);
-userRouter.route("/login")
-    .post(userController.userLogin);
-userRouter.route("/refresh")
-    .post(userController.refreshSession);
-userRouter.route("/logout")
-    .get(userController.userLogout);
+userRouter.route('/')
+    .get(authorizeUser, userController.getAllUsers)
+    .post(authorizeUser, userController.createUser);
 
 export default userRouter;
