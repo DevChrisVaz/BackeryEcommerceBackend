@@ -18,7 +18,7 @@ class Server {
         this.app = express();
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
-        this.app.use(cors());
+        this.app.use(cors({ credentials: true, origin: "https://deleitelzt-admin.vercel.app/" }));
         this.app.use(express.static("public"));
         this.app.use(helmet());
         this.app.use(fileUpload());

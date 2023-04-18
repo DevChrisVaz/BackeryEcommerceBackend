@@ -17,6 +17,7 @@ import commentRouter from "./comment.routes";
 import QuoteNotFoundError from "../../../../domain/exceptions/quote/QuoteNotFoundError";
 import CommentNotFoundError from "../../../../domain/exceptions/comment/CommetNotFoundError";
 import UserAlreadyCommentedError from "../../../../domain/exceptions/comment/UserAlreadyCommentedError";
+import PasswordsNotMatchError from "../../../../domain/exceptions/PasswordsNotMatchError";
 
 const router = Router();
 
@@ -33,13 +34,21 @@ router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     //#region 
     if (err instanceof UserNotFoundError) {
         res.status(404).json({
-            message: err.message
+            message: err.message,
+            name: err.name
         });
     }
 
     else if (err instanceof UserAlreadyExistsError) {
         res.status(400).json({
             message: err.message
+        });
+    }
+
+    else if (err instanceof PasswordsNotMatchError) {
+        res.status(400).json({
+            message: err.message,
+            name: err.name
         });
     }
     //#endregion
